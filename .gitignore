@@ -23,6 +23,9 @@ wheels/
 # PyCharm
 .idea/
 
+# Claude Code
+.claude/
+
 # Test outputs
 test_data/
 output_*/
