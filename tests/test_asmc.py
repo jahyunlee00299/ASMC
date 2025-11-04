@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import re
 
 asmc_path = Path(__file__).parents[1]
 sys.path.append(str(asmc_path))
@@ -37,17 +38,17 @@ class TestPocketDetection:
         yield (d, ref)
     
     def test_build_ds_sys_exception(self, data_for_pocket_detection):
-        
+
         outdir = data_for_pocket_detection[0]
         ref = data_for_pocket_detection[1]
         chain = "all"
-        
+
         ref_pdb = outdir / "refA.pdb"
-        
+
         error_msg = f"An error has occured while reading {ref}:\n{ref_pdb}"
         error_msg += " file not found"
-        
-        with pytest.raises(Exception, match=error_msg):
+
+        with pytest.raises(Exception, match=re.escape(error_msg)):
             ds, text = asmc.build_ds(ref, outdir, chain)
     
     def test_build_ds(self, data_for_pocket_detection):
@@ -191,8 +192,8 @@ class TestStructuralAlignment:
         error_msg += "of reference. This may caused by a residue number "
         error_msg += "indicated in the pocket file not found in the "
         error_msg += f"'{refA_pdb}' or a duplicated residue number"
-        
-        with pytest.raises(asmc.RenumberResiduesError, match=error_msg):
+
+        with pytest.raises(asmc.RenumberResiduesError, match=re.escape(error_msg)):
             renum = asmc.renumber_residues(ref_list)
             
     def test_renumber_residues(self, data_for_structural_aln):
