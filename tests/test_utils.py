@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import re
 
 asmc_path = Path(__file__).parents[1]
 sys.path.append(str(asmc_path))
@@ -261,7 +262,7 @@ class TestExtractAA:
         
         file_format_error = f"'{bad_file}' does not appear to contain at least "
         file_format_error += "2 columns"
-        with pytest.raises(utils.FileFormatError, match=file_format_error):
+        with pytest.raises(utils.FileFormatError, match=re.escape(file_format_error)):
             result = utils.extract_aa(bad_file, 1, "K", None)
             
         position_error = "position must be between 1 and 3, got '5'"
