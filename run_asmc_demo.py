@@ -100,11 +100,13 @@ LSEQVQEELLSSQVTQELRALMDETMKELKAYKSELEEQLTPVAGGG
 """
     (test_dir / "sequences.fasta").write_text(fasta_content, encoding='utf-8')
 
-    # Create models.txt with correct references
-    models_content = "\n".join([
-        f"{(test_dir / f'protein{i}.pdb').absolute()}\t{(test_dir / 'protein1.pdb').absolute()}"
-        for i in range(1, 4)
-    ])
+    # Create models.txt with correct tab-separated format
+    models_lines = []
+    for i in range(1, 4):
+        pdb_path = (test_dir / f'protein{i}.pdb').absolute()
+        ref_name = 'protein1'
+        models_lines.append(f"{pdb_path}\t{ref_name}")
+    models_content = "\n".join(models_lines)
     (test_dir / "models.txt").write_text(models_content, encoding='utf-8')
 
     # Create pocket.txt
