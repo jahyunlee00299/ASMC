@@ -74,7 +74,12 @@ Follow the instructions in the [Docker section of the wiki](https://github.com/l
 Run ASMC in a blind way (unknown active site) using a multi fasta file that should contain at least 100 sequences for clustering to be sufficiently relevant.
 
 ```
-asmc run --log run_asmc.log --threads 6 -r reference_file -s sequences.fasta
+python -m asmc.run_asmc run --log run_asmc.log -t 6 -r reference_file -s sequences.fasta
+```
+
+Or if installed with pip, you can also use:
+```
+asmc run --log run_asmc.log -t 6 -r reference_file -s sequences.fasta
 ```
 
 `reference_file` should contains the path to the reference(s) structure(s), e.g:
@@ -83,4 +88,23 @@ asmc run --log run_asmc.log --threads 6 -r reference_file -s sequences.fasta
 <path>/RefB.pdb
 ```
 
-NB: For more details, see the [wiki](https://github.com/labgem/ASMC/wiki)
+## Documentation
+
+- **English**: See the [wiki](https://github.com/labgem/ASMC/wiki) for detailed documentation
+- **한국어 (Korean)**:
+  - `Quick_Start.md` - Quick start guide in 5 minutes
+  - `ASMC_사용법.md` - Comprehensive user manual
+  - `python 실행_예제.py` - Interactive execution script with menu
+  - `ASMC_실행.bat` - Windows batch script
+
+## Testing
+
+Run the test suite:
+```
+python -m pytest tests/ -v
+```
+
+Or use the interactive test script:
+```
+python 실행_예제.py
+```
