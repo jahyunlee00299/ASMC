@@ -10,16 +10,16 @@ python -m asmc.run_asmc --help
 
 ### 2단계: 테스트 파일 생성
 ```bash
-# Python 스크립트로 테스트 파일 생성
+# Python 스크립트로 테스트 파일 생성 및 실행
 python 실행_예제.py
-# 옵션 4 선택
+# 대화형 메뉴에서 원하는 옵션 선택
 ```
 
 또는 Windows에서:
 ```bash
 # 배치 파일 실행
 ASMC_실행.bat
-# 옵션 6 선택
+# 옵션 6 선택 (테스트 파일 생성)
 ```
 
 ### 3단계: 첫 번째 실행
@@ -93,9 +93,16 @@ MKHLWFFLLLVAAPRWVL...
 ## 🆘 도움이 필요하면
 
 1. 상세 사용법: `ASMC_사용법.md` 파일 참조
-2. 예제 코드: `실행_예제.py` 실행
+2. 대화형 실행: `python 실행_예제.py` 실행
 3. Windows 사용자: `ASMC_실행.bat` 실행
-4. 각 명령어 도움말: `--help` 옵션 추가
+4. 각 명령어 도움말: `python -m asmc.run_asmc --help` 옵션 사용
+
+## 📚 관련 파일
+
+- **실행_예제.py**: 대화형 메뉴로 다양한 ASMC 기능 테스트
+- **run_asmc_test.py**: 기본적인 실행 테스트 스크립트
+- **run_asmc_demo.py**: 시각화 포함 데모 스크립트
+- **ASMC_실행.bat**: Windows용 배치 스크립트
 
 ---
 작성일: 2025년 11월 4일
