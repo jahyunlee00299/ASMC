@@ -729,7 +729,10 @@ def run(args):
         output.write_text(text)
     
     logging.info("Reading Scoring Matrix")
-    with importlib.resources.path(asmc, "AA_distances.tsv") as p:
+    # Use string name instead of module object for Python 3.11+ compatibility
+    with importlib.resources.as_file(
+        importlib.resources.files("asmc").joinpath("AA_distances.tsv")
+    ) as p:
         matrix = p
 
     try:

@@ -28,14 +28,15 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "biopython>=1.86",
-    "numpy>=2.3.4",
-    "scikit-learn>=1.7.2",
-    "pyyaml>=6.0.2",
-    "pillow>=12.0.0",
-    "plotnineseqsuite>=1.2.0",
-    "pytest>=8.4.2",
-    "xlsxwriter>=3.2.9"
+    "biopython>=1.80",
+    "numpy>=1.20",
+    "scikit-learn>=1.0",
+    "pyyaml>=6.0",
+    "pillow>=9.0",
+    "matplotlib>=3.5",
+    "logomaker>=0.8",
+    "pytest>=7.0",
+    "xlsxwriter>=3.0"
 ]
 
 [tool.setuptools]
