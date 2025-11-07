@@ -131,7 +131,7 @@ def run_build_ali(ref, seq, pocket, outdir, pid, log):
 
     # Run the script   
      
-    command = f"python3 {src_path} -o {outdir} -r {ref} -s {seq} -p {pocket} --id {pid}"
+    command = f"{sys.executable} {src_path} -o {outdir} -r {ref} -s {seq} -p {pocket} --id {pid}"
     try:
         if log is None:
             ret = subprocess.run(command.split(), check=True)
@@ -179,7 +179,7 @@ def modeling(job_file, outdir, threads, n):
     job_list = []
     with open(job_file, "r") as f:
         for line in f:
-            job_list.append(f"python3 {src_path} -a {line.strip()} -o {model_dir} -n {n}")
+            job_list.append(f"{sys.executable} {src_path} -a {line.strip()} -o {model_dir} -n {n}")
     
     with multiprocessing.Pool(processes=threads) as pool:
         ret = set(pool.map(run_modeling, job_list))
