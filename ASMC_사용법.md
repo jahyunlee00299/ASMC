@@ -53,72 +53,120 @@ python -m asmc.run_asmc <명령어> [옵션들]
 단백질 서열만 있고 구조가 없을 때 사용합니다.
 
 ```bash
-python -m asmc.run_asmc run \
-    -s sequences.fasta \          # 타겟 서열 파일 (FASTA 형식)
-    -r references.txt \           # 참조 구조 파일 목록
-    -o output_dir/ \              # 출력 디렉토리
-    -t 6 \                        # CPU 스레드 수
-    --id 30                       # 최소 서열 유사도 (%)
+# 프로젝트 루트 디렉토리에서 실행
+python -m asmc.run_asmc run -s sequences.fasta -r udh_references.txt -o output_basic/ -t 6 --id 30
 ```
+
+**사용 파일:**
+- 서열 파일: `sequences.fasta` (프로젝트 루트)
+- 참조 구조: `udh_references.txt` (test_data/AtUdh_pdb3rfv_chainA.pdb 포함)
+- 출력: `output_basic/` 디렉토리에 생성
 
 ### 2️⃣ 이미 있는 3D 구조 모델 사용
 구조 모델이 이미 있을 때 사용합니다.
 
 ```bash
-python -m asmc.run_asmc run \
-    -m models.txt \               # 모델 파일 경로 목록
-    -r references.txt \           # 참조 구조 파일 목록
-    -o output_dir/ \              # 출력 디렉토리
-    --chain A,B                   # 분석할 체인 지정
+# models.txt 파일 먼저 생성 필요 (아래 형식 참조)
+python -m asmc.run_asmc run -m models.txt -r udh_references.txt -o output_models/ --chain A
+```
+
+**models.txt 파일 형식:**
+```
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein1.pdb	AtUdh
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein2.pdb	AtUdh
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein3.pdb	AtUdh
 ```
 
 ### 3️⃣ Multiple Sequence Alignment(MSA)로 직접 클러스터링
 MSA가 이미 준비되어 있을 때 사용합니다.
 
 ```bash
-python -m asmc.run_asmc run \
-    -M msa_file.txt \             # MSA 파일
-    -o output_dir/ \              # 출력 디렉토리
-    -e 0.3 \                      # 클러스터링 거리 임계값
-    --min-samples 5               # 최소 샘플 수
+# MSA 파일이 있을 때 (예: MUSCLE, MAFFT 등으로 생성한 정렬 파일)
+python -m asmc.run_asmc run -M your_msa_file.txt -o output_msa/ -e 0.3 --min-samples 5
 ```
 
 ### 4️⃣ 활성 부위 정렬 데이터로 서브그룹 생성
+**기본 실행 (자동 파라미터):**
 ```bash
-python -m asmc.run_asmc run \
-    -a active_sites.fasta \       # 활성 부위 정렬 파일
-    -o output_dir/                # 출력 디렉토리
+# UDH 활성 부위 클러스터링
+python -m asmc.run_asmc run -a udh_active_sites.fasta -o udh_asmc_results/
 ```
+
+**커스텀 파라미터 사용:**
+```bash
+# eps와 min-samples 수동 지정
+python -m asmc.run_asmc run -a udh_active_sites.fasta -o udh_asmc_custom/ -e 0.65 --min-samples 3
+```
+
+**기질 결합 부위 클러스터링:**
+```bash
+# UDH 기질 결합 부위 분석
+python -m asmc.run_asmc run -a udh_substrate_sites.fasta -o udh_substrate_results/
+```
+
+**사용 가능한 FASTA 파일:**
+- `udh_active_sites.fasta` - UDH 활성 부위 서열 (107KB)
+- `udh_substrate_sites.fasta` - UDH 기질 결합 부위 서열 (110KB)
+- `test_data/UDHs_filtered_std2.5.fasta` - 필터링된 UDH 서열
 
 ## 📁 입력 파일 형식
 
 ### references.txt (참조 구조 파일 목록)
+**예시: udh_references.txt**
 ```
-/path/to/protein1.pdb
-/path/to/protein2.pdb
-/path/to/protein3.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\AtUdh_pdb3rfv_chainA.pdb
+```
+
+**프로젝트에서 사용 가능한 PDB 파일:**
+```
+# UDH 참조 구조
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\AtUdh_pdb3rfv_chainA.pdb
+
+# Tutorial 예시 파일들
+C:\Users\Jahyun\PycharmProjects\ASMC\docs\tutorial\ADH4.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\docs\tutorial\DH35.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\docs\tutorial\DHP6.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\docs\tutorial\MATA.pdb
+
+# 테스트용 PDB 파일들
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein1.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein2.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein3.pdb
 ```
 
 ### sequences.fasta (타겟 서열 파일)
+**프로젝트 루트의 sequences.fasta 내용:**
 ```
->Protein1
-MKVLWAALLVTFLAGCQAKVEQAVETEPEPELRQQTEWQSGQRWELALGRFWDYLRWVQTLSEQVQEELLSSQVTQELRALMDETMKELKAYKSELEEQLTPVA
->Protein2
-MKHLWFFLLLVAAPRWVLSAAGACGQEARPEAVGQHWEALGRFWDYLRWVQTLSEQVQEELLSSQVTQELRALMDETMKELKAYKSELEEQLTPVA
+>Example_Protein_1
+MKVLWAALLVTFLAGCQAKVEQAVETEPEPELRQQTEWQSGQRWELALGRFWDYLRWVQT
+LSEQVQEELLSSQVTQELRALMDETMKELKAYKSELEEQLTPVA
+
+>Example_Protein_2
+MKHLWFFLLLVAAPRWVLSAAGACGQEARPEAVGQHWEALGRFWDYLRWVQTLSEQVQEE
+LLSSQVTQELRALMDETMKELKAYKSELEEQLTPVA
 ```
 
+**사용 가능한 FASTA 파일들:**
+- `C:\Users\Jahyun\PycharmProjects\ASMC\sequences.fasta` - 예시 서열 2개
+- `C:\Users\Jahyun\PycharmProjects\ASMC\test_data\sequences.fasta` - 테스트용 서열
+- `C:\Users\Jahyun\PycharmProjects\ASMC\test_data\UDHs_filtered_std2.5.fasta` - UDH 필터링 서열
+- `C:\Users\Jahyun\PycharmProjects\ASMC\docs\tutorial\sequences.fasta` - Tutorial 서열
+
 ### models.txt (모델 파일 목록)
+**형식:** 각 줄에 `모델_경로[TAB]참조_이름`
 ```
-/path/to/model1.pdb	reference1
-/path/to/model2.pdb	reference1
-/path/to/model3.pdb	reference2
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein1.pdb	AtUdh
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein2.pdb	AtUdh
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\protein3.pdb	AtUdh
 ```
 
 ### pocket.txt (선택사항 - 활성 부위 정의)
+**예시: udh_pocket.txt (프로젝트에 이미 존재)**
 ```
-reference1.pdb	A	10,15,20,25,30
-reference2.pdb	B	12,17,22,27,32
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\AtUdh_pdb3rfv_chainA.pdb	A	137,138,139,140,141,143,165,166,167,189,190,191,213,214,215,237,238,257,258,259
 ```
+
+**형식:** `PDB_경로[TAB]체인[TAB]잔기번호(쉼표로 구분)`
 
 ## ⚙️ 주요 옵션 설명
 
@@ -180,26 +228,24 @@ output_dir/
 
 ### 서열 유사도 계산
 ```bash
-python -m asmc.run_asmc identity \
-    -s sequences.fasta \
-    -r references.txt \
-    -o identity_results.txt
+# 프로젝트 파일로 서열 유사도 확인
+python -m asmc.run_asmc identity -s sequences.fasta -r udh_references.txt -o identity_results.txt
+
+# UDH 필터링 데이터 사용
+python -m asmc.run_asmc identity -s test_data/UDHs_filtered_std2.5.fasta -r udh_references.txt -o udh_identity.txt
 ```
 
 ### 활성 부위 추출
 ```bash
-python -m asmc.run_asmc extract \
-    -i input_file.tsv \
-    -p 1 \                    # 위치 (1-3)
-    -a K \                    # 아미노산 타입
-    -o extracted.txt
+# 클러스터링 결과에서 특정 조건의 서열 추출
+# 예: 위치 1에 Lysine(K)이 있는 서열만 추출
+python -m asmc.run_asmc extract -i udh_clusters_20251104_145026.tsv -p 1 -a K -o extracted_K_position1.txt
 ```
 
 ### 결과를 Excel로 변환
 ```bash
-python -m asmc.run_asmc to_xlsx \
-    -i clustering_results.tsv \
-    -o results.xlsx
+# TSV 클러스터링 결과를 Excel 형식으로 변환
+python -m asmc.run_asmc to_xlsx -i udh_clusters_20251104_145026.tsv -o udh_clusters.xlsx
 ```
 
 ## 🐛 문제 해결
@@ -227,33 +273,43 @@ python -m asmc.run_asmc to_xlsx \
 
 ## 💻 실제 사용 예시
 
-### 예시 1: 간단한 테스트 실행
+### 예시 1: UDH 활성 부위 클러스터링 (가장 간단)
 ```bash
-# 테스트 데이터 준비
-echo "/path/to/test.pdb" > refs.txt
-echo ">TestSeq
-MKVLWAALLVTFLAGCQAKVEQAVETEPEPELRQQTEWQSGQR" > seqs.fasta
+# 프로젝트에 이미 준비된 UDH 활성 부위 데이터 사용
+python -m asmc.run_asmc run -a udh_active_sites.fasta -o udh_results/
+```
+**실행 결과:** `udh_results/` 디렉토리에 클러스터링 결과와 시퀀스 로고 생성
 
-# ASMC 실행
-python -m asmc.run_asmc run \
-    -s seqs.fasta \
-    -r refs.txt \
-    -o test_output/ \
-    --end modeling
+### 예시 2: 기본 서열 파일로 전체 파이프라인 실행
+```bash
+# 서열에서 시작하여 구조 모델링까지 수행
+python -m asmc.run_asmc run -s sequences.fasta -r udh_references.txt -o output_full/ -t 6 --id 30
+```
+**실행 과정:**
+1. 서열 유사도 계산
+2. Homology modeling (MODELLER 필요)
+3. 포켓 검출 (P2RANK 또는 pocket 파일 사용)
+4. 구조 정렬
+5. 클러스터링
+6. 시퀀스 로고 생성
+
+### 예시 3: 커스텀 파라미터로 UDH 분석
+```bash
+# eps 값과 최소 샘플 수를 수동으로 지정
+python -m asmc.run_asmc run -a udh_substrate_sites.fasta -o udh_custom/ -e 0.25 --min-samples 2 --format svg --resolution 300
 ```
 
-### 예시 2: 전체 파이프라인 실행
+### 예시 4: 여러 eps 값 자동 테스트
 ```bash
-python -m asmc.run_asmc run \
-    -s my_proteins.fasta \
-    -r reference_structures.txt \
-    -o full_analysis/ \
-    -t 8 \
-    --id 25 \
-    -e auto \
-    --min-samples auto \
-    --format svg \
-    --resolution 300
+# --test 1 옵션으로 여러 eps 값 시도
+python -m asmc.run_asmc run -a udh_active_sites.fasta -o udh_test_params/ --test 1
+```
+**결과:** 다양한 eps 값에 대한 클러스터링 결과가 각 서브디렉토리에 저장됨
+
+### 예시 5: 포켓 정의 파일 사용
+```bash
+# 미리 정의된 활성 부위(pocket) 정보 사용
+python -m asmc.run_asmc run -m models.txt -r udh_references.txt -p udh_pocket.txt -o output_pocket/ --chain A
 ```
 
 ## 📝 참고사항
@@ -263,14 +319,54 @@ python -m asmc.run_asmc run \
 - P2RANK를 사용한 포켓 검출은 Java 설치 필요
 - 시각화를 위해 PyMOL 설치 권장
 
+## 🚀 빠른 실행 가이드 (복사 & 붙여넣기)
+
+### 가장 간단한 실행 (추천)
+```bash
+python -m asmc.run_asmc run -a udh_active_sites.fasta -o quick_test/
+```
+
+### 기질 결합 부위 분석
+```bash
+python -m asmc.run_asmc run -a udh_substrate_sites.fasta -o substrate_analysis/
+```
+
+### 커스텀 파라미터 사용
+```bash
+python -m asmc.run_asmc run -a udh_active_sites.fasta -o custom_output/ -e 0.3 --min-samples 3
+```
+
+### 서열 파일로 전체 분석 (모델링 포함)
+```bash
+python -m asmc.run_asmc run -s sequences.fasta -r udh_references.txt -o full_pipeline/ -t 6 --id 30
+```
+
+### 서열 유사도만 확인
+```bash
+python -m asmc.run_asmc identity -s sequences.fasta -r udh_references.txt -o identity.txt
+```
+
+## 📁 프로젝트에서 사용 가능한 주요 파일
+
+| 파일 유형 | 파일 경로 | 설명 |
+|---------|----------|------|
+| **활성 부위 FASTA** | `udh_active_sites.fasta` | UDH 활성 부위 서열 (107KB) |
+| **기질 부위 FASTA** | `udh_substrate_sites.fasta` | UDH 기질 결합 부위 (110KB) |
+| **예시 서열** | `sequences.fasta` | 테스트용 단백질 서열 2개 |
+| **참조 PDB** | `udh_references.txt` | AtUdh PDB 구조 경로 |
+| **포켓 정의** | `udh_pocket.txt` | UDH 활성 부위 잔기 정의 |
+| **테스트 서열** | `test_data/UDHs_filtered_std2.5.fasta` | 필터링된 UDH 서열 |
+| **Tutorial PDB** | `docs/tutorial/*.pdb` | 예시 PDB 파일들 |
+
 ## 📧 문제 발생시
 
 테스트가 모두 통과했으므로 기본 기능은 정상 작동합니다.
 추가 문제 발생시 다음을 확인하세요:
-1. Python 버전 (3.8 이상)
-2. 모든 의존성 패키지 설치 여부
-3. 입력 파일 형식과 경로
-4. 충분한 시스템 리소스
+1. Python 버전 (3.8 이상, 현재 3.14 설치됨)
+2. 모든 의존성 패키지 설치 여부 (`pip install -e .`)
+3. 입력 파일 형식과 경로 (절대 경로 사용 권장)
+4. 충분한 시스템 리소스 (메모리, 디스크 공간)
+5. Windows 경로 사용 시 역슬래시(`\`) 이스케이프 확인
 
 ## 📚 관련 파일 및 스크립트
 
@@ -291,5 +387,6 @@ python -m asmc.run_asmc run \
 - **tests/test_utils.py**: 유틸리티 함수 단위 테스트
 
 ---
-작성일: 2025년 11월 4일
+작성일: 2025년 11월 7일
 ASMC 버전: 1.2.0
+업데이트: 실제 프로젝트 파일 경로로 모든 예시 코드 변경
