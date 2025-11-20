@@ -1,0 +1,18 @@
+# UDH Models file for ASMC
+# Format: model_path[TAB]reference_id
+#
+# This file maps each target model to its reference structure
+# The reference_id should match the reference structure basename
+#
+# Example entries (modify paths according to your system):
+#
+# Linux/Mac paths:
+# /home/user/ASMC/pdb_structures/other_udh_structures/human_ugdh.pdb	AtUdh_3rfv
+# /home/user/ASMC/pdb_structures/other_udh_structures/ecoli_ugdh.pdb	AtUdh_3rfv
+# /home/user/ASMC/pdb_structures/other_udh_structures/yeast_ugdh.pdb	AtUdh_3rfv
+#
+# Windows paths:
+# C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\other_udh_structures\human_ugdh.pdb	AtUdh_3rfv
+# C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\other_udh_structures\ecoli_ugdh.pdb	AtUdh_3rfv
+#
+# Add your UDH structures below:

@@ -1,0 +1,11 @@
+# UDH References file for ASMC
+# Format: One PDB file path per line
+#
+# This file lists the reference structures to be used in ASMC pipeline
+# Modify the paths according to your system
+#
+# Linux/Mac paths:
+/home/user/ASMC/pdb_structures/AtUdh_3rfv.pdb
+
+# Windows paths (예시):
+# C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\AtUdh_3rfv.pdb
