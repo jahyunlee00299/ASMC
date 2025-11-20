@@ -1,6 +1,19 @@
-# UDH Active Site Finder
+# UDH Active Site Finder & Superposition Tools
 
-이 디렉토리는 AtUdh (Arabidopsis thaliana UDP-glucose dehydrogenase)의 구조와 active site 정보를 이용하여 다른 UDH 단백질들의 active site를 찾기 위한 도구들을 포함합니다.
+이 디렉토리는 AtUdh (Arabidopsis thaliana UDP-glucose dehydrogenase)의 구조와 active site 정보를 이용하여 다른 UDH 단백질들의 active site를 찾고, active site 기반 superposition을 수행하는 도구들을 포함합니다.
+
+## 제공 도구
+
+### 1. `find_udh_active_sites.py`
+- 전체 구조 정렬을 통한 active site 탐색
+- 여러 UDH 구조 일괄 처리
+- ASMC pocket 형식 변환 지원
+
+### 2. `extract_and_align_active_sites.py` ⭐ NEW
+- **Active site만을 사용한 구조 정렬**
+- 5개 특정 UDH AlphaFold 구조 분석
+- Active site RMSD vs. Global RMSD 비교
+- 정렬된 구조 PDB 파일 저장
 
 ## 필요한 파일
 
@@ -66,3 +79,37 @@ UDP-glucose dehydrogenase의 주요 active site regions:
 3. **Catalytic residues**: 산화 반응을 촉매하는 잔기들
 
 자세한 정보는 `atudh_active_site.txt` 파일을 참조하세요.
+
+## Active Site Superposition (새로운 기능!)
+
+### 사용법: 5개 AlphaFold UDH 구조 분석
+
+```bash
+# Active site만을 사용하여 구조 정렬
+python extract_and_align_active_sites.py \
+    --reference AtUdh_3rfv.pdb \
+    --reference-sites atudh_active_site.txt \
+    --target-dir uronate_dehydrogenase_alphafold/ \
+    --output active_site_results/
+```
+
+### 대상 구조 (Rossmann RMSD 기준)
+- A0A1I2LZE5 (15.78 Å) - 가장 유사
+- A0A1I1AQL9 (17.27 Å)
+- A0A2Z4AB20 (19.85 Å)
+- A0A1N6JJV2 (20.89 Å)
+- A0A1U7CQA8 (25.19 Å) - 가장 다름
+
+### 출력 결과
+- `active_site_alignment_summary.tsv`: 전체 RMSD 비교
+- `[ID]_active_site_alignment.txt`: 개별 상세 결과
+- `[ID]_aligned.pdb`: Active site로 정렬된 구조 (PyMOL로 시각화 가능)
+
+자세한 사용법은 `ACTIVE_SITE_SUPERPOSITION_GUIDE.md`를 참조하세요.
+
+## 문서
+
+- **QUICK_START.md**: 5분 빠른 시작 가이드
+- **USAGE_EXAMPLE.md**: 상세 사용 예제
+- **ACTIVE_SITE_SUPERPOSITION_GUIDE.md**: Active site superposition 완전 가이드
+- **TEST_RESULTS.md**: Dehydrogenase 테스트 결과
