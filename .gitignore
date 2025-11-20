@@ -28,22 +28,43 @@ wheels/
 
 # Test outputs
 test_data/
+output/
 output_*/
+*_output/
+*_results/
+*_asmc_*/
 asmc_report_*.txt
 asmc_results_*.png
+udh_*_report_*.txt
+udh_*_analysis_*.png
+udh_clustering_*.png
+udh_substrate_*.png
+udh_variants_*.png
 identity_results.txt
+3rfv_superposition_results/
+asmc_alphafold_output/
+
+# UDH cluster outputs
+udh_cluster_*.fasta
+udh_clusters_*.tsv
 
 # Temp files
 *.tmp
 *.bak
 *.swp
 *~
+*_predicted_pockets.txt
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Project specific
-models.txt
-references.txt
-sequences.fasta
+# Project specific - keep example files in data/
+# models.txt
+# references.txt
+# sequences.fasta
+
+# P2RANK outputs
+p2rank_*/
+*_predictions.csv
+*.ds

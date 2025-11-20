@@ -1,0 +1,1 @@
+C:\Users\Jahyun\PycharmProjects\ASMC\test_data\AtUdh_pdb3rfv_chainA.pdb	A	137,138,139,140,141,143,165,166,167,189,190,191,213,214,215,237,238,257,258,259

@@ -1,0 +1,25 @@
+# Active sites found in MATA
+# Reference: pdb3rfv_chainA.pdb
+# Alignment RMSD: 18.06 Å
+# Distance cutoff: 4.0 Å
+# Chain: A
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+MATA.pdb	A	16,18,16,41,325,324,90,141,111,143,261,258,238
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 16	GLY	2.34
+# 18	GLY	1.88
+# 16	GLY	2.85
+# 41	SER	2.20
+# 325	PHE	3.20
+# 324	MET	1.84
+# 90	GLY	2.17
+# 141	GLY	3.32
+# 111	GLU	3.83
+# 143	PHE	3.12
+# 261	ILE	2.91
+# 258	THR	3.05
+# 238	LYS	3.75

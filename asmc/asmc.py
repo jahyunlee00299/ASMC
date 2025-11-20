@@ -12,9 +12,16 @@ from PIL import Image, ImageDraw
 
 import warnings
 
-from plotnine import ggplot, labs
-from plotnineseqsuite.logo import geom_logo
-from plotnineseqsuite.theme import theme_seq, theme
+# Optional import for plotnineseqsuite (requires Python 3.10+)
+try:
+    from plotnine import ggplot, labs
+    from plotnineseqsuite.logo import geom_logo
+    from plotnineseqsuite.theme import theme_seq, theme
+    HAS_PLOTNINESEQSUITE = True
+except ImportError:
+    HAS_PLOTNINESEQSUITE = False
+    warnings.warn("plotnineseqsuite not available - some plotting features will be disabled")
+
 warnings.filterwarnings("ignore", module="plotnine")    
 
 from asmc.utils import read_multi_fasta

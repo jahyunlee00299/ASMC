@@ -88,14 +88,61 @@ asmc run --log run_asmc.log -t 6 -r reference_file -s sequences.fasta
 <path>/RefB.pdb
 ```
 
+## Project Structure
+
+```
+ASMC/
+├── asmc/                    # Core ASMC package
+├── docs/                    # Documentation and diagrams
+├── tests/                   # Unit tests
+│
+├── examples/                # Example workflows and analysis scripts
+│   ├── udh_analysis/       # UDH enzyme family analysis
+│   ├── alphafold_workflow/ # AlphaFold integration examples
+│   ├── active_site_detection/  # Structure-based active site tools
+│   └── README.md
+│
+├── data/                    # Input data files
+│   ├── pdb_structures/     # PDB files and active site definitions
+│   ├── *.fasta             # Sequence files
+│   ├── *_references.txt    # Reference structure lists
+│   └── *_pocket.txt        # Active site definitions
+│
+├── tools/                   # External tool integration
+│   └── p2rank/             # P2RANK pocket detection integration
+│
+└── output/                  # Output directory (git-ignored)
+```
+
 ## Documentation
 
 - **English**: See the [wiki](https://github.com/labgem/ASMC/wiki) for detailed documentation
 - **한국어 (Korean)**:
   - `Quick_Start.md` - Quick start guide in 5 minutes
   - `ASMC_사용법.md` - Comprehensive user manual
-  - `python 실행_예제.py` - Interactive execution script with menu
-  - `ASMC_실행.bat` - Windows batch script
+  - `examples/실행_예제.py` - Interactive execution script with menu
+
+## Examples
+
+### UDH Analysis
+```bash
+cd examples/udh_analysis
+python run_udh_asmc.py --help
+```
+
+### AlphaFold Workflow
+```bash
+cd examples/alphafold_workflow
+python run_asmc_with_alphafold.py --help
+```
+
+### Active Site Detection
+```bash
+cd examples/active_site_detection
+python find_udh_active_sites.py --help
+```
+
+See `examples/README.md` for detailed usage instructions.
 
 ## Testing
 
@@ -104,7 +151,8 @@ Run the test suite:
 python -m pytest tests/ -v
 ```
 
-Or use the interactive test script:
+Or use example scripts:
 ```
-python 실행_예제.py
+cd examples
+python run_asmc_demo.py
 ```

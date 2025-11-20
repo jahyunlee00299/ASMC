@@ -1,0 +1,3 @@
+../../data/pdb_structures/pdb3rfv_chainA.pdb
+../../data/pdb_structures/AF-Q7CRQ0-F1-model_v6.pdb
+../../data/pdb_structures/REPORTED_AtUDH.pdb
