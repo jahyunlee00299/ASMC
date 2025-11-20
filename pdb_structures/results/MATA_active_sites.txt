@@ -1,0 +1,32 @@
+# Active sites found in MATA
+# Reference: ADH4.pdb
+# Alignment RMSD: 16.43 Å
+# Distance cutoff: 4.0 Å
+# Chain: A
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+MATA.pdb	A	87,110,111,142,143,144,145,148,168,170,171,180,184,210,210,211,278,279,312,316
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 87	SER	1.77
+# 110	ALA	1.72
+# 111	GLU	2.02
+# 142	GLY	1.65
+# 143	PHE	1.86
+# 144	LEU	2.52
+# 145	ASP	2.47
+# 148	CYS	1.81
+# 168	GLY	0.92
+# 170	GLN	1.06
+# 171	TYR	2.24
+# 180	LEU	3.85
+# 184	HIS	2.71
+# 210	SER	3.91
+# 210	SER	2.98
+# 211	TYR	2.50
+# 278	GLN	1.97
+# 279	VAL	1.88
+# 312	THR	3.11
+# 316	THR	1.74

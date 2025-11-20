@@ -1,0 +1,32 @@
+# Active sites found in DHP6
+# Reference: ADH4.pdb
+# Alignment RMSD: 7.67 Å
+# Distance cutoff: 4.0 Å
+# Chain: A
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+DHP6.pdb	A	80,103,104,135,136,137,138,140,162,164,165,169,173,177,199,199,266,268,298,302
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 80	SER	1.48
+# 103	SER	1.24
+# 104	GLU	1.51
+# 135	GLY	1.26
+# 136	TYR	0.89
+# 137	GLN	3.12
+# 138	ASP	1.76
+# 140	PHE	2.11
+# 162	ALA	0.87
+# 164	TRP	1.98
+# 165	ASN	2.08
+# 169	PHE	0.84
+# 173	LEU	0.60
+# 177	GLN	0.88
+# 199	PHE	3.35
+# 199	PHE	2.01
+# 266	MET	0.61
+# 268	GLY	2.29
+# 298	THR	2.44
+# 302	THR	1.28

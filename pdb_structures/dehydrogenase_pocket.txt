@@ -1,0 +1,8 @@
+# ASMC Pocket Definition File
+# Generated from UDH active site finder results
+# Format: PDB_path[TAB]Chain[TAB]Residue_numbers
+#
+# Reference (skipped): ADH4
+pdb_structures/DH35.pdb	B	84,107,108,139,140,141,142,145,166,167,168,173,177,181,201,202,202,269,270,301,305
+pdb_structures/DHP6.pdb	A	80,103,104,135,136,137,138,140,162,164,165,169,173,177,199,199,266,268,298,302
+pdb_structures/MATA.pdb	A	87,110,111,142,143,144,145,148,168,170,171,180,184,210,210,211,278,279,312,316
