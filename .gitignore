@@ -67,4 +67,4 @@ Thumbs.db
 # P2RANK outputs
 p2rank_*/
 *_predictions.csv
-*.ds
+*.dstools/p2rank/p2rank_2.4.2.tar.gz
