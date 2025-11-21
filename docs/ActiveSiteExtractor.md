@@ -466,8 +466,29 @@ pip install biopython
 - Structural alignment: Kabsch algorithm
 - Sequence alignment: Needleman-Wunsch algorithm
 
+## ⚠️ PDB 번호 오프셋 주의사항
+
+**중요 (2025-11-21 확인)**: PDB 3RFV (AtUDH 참조 구조)는 **residue 2번부터 시작**합니다.
+
+- **오프셋 공식**: `PDB_num = alignment_pos + 2`
+- **예시**: alignment pos 134 (Y) = PDB 136 (Y) ← 핵심 촉매 잔기
+- **PyMOL에서 PDB 파일 사용 시**: PDB 번호 그대로 사용
+- **Alignment 기반 매핑 시**: 오프셋 고려 필요
+
+**코드에서 처리 시:**
+```python
+# alignment position → PDB position 변환
+pdb_position = alignment_position + 2
+
+# PDB position → alignment position 변환
+alignment_position = pdb_position - 2
+```
+
 ## 업데이트 이력
 
+- 2025-11-21:
+  - PDB 번호 오프셋 문서 추가 (PDB_num = alignment_pos + 2)
+  - Y136 촉매 잔기 확인 (이전 Y134 오류 수정)
 - 2025-11-21: 초기 릴리스
   - 구조 및 서열 기반 추출 통합
   - 배치 처리 기능 추가

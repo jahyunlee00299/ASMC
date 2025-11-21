@@ -6,6 +6,19 @@
 - **Chain**: A
 - **Total Active Site Residues**: 23
 
+## ⚠️ PDB 번호 오프셋 (2025-11-21 확인)
+
+**중요**: PDB 3RFV 좌표는 **residue 2번부터 시작**합니다 (N-terminal ALA 추가).
+
+- **오프셋 공식**: `PDB_num = alignment_pos + 2`
+- **예시**: alignment pos 134 (Y) = PDB 136 (Y) ← **핵심 촉매 잔기 (Tyr136)**
+- **PyMOL에서 PDB 파일 사용 시**: PDB 번호 그대로 사용
+- **Alignment 기반 매핑 시**: 오프셋 고려 필요
+
+**핵심 촉매 잔기:**
+- **Y136 (PDB numbering)** = Tyrosine, 핵심 촉매 잔기
+- 이전에 Y134로 잘못 표기되었던 것을 수정
+
 ## Complete Active Site Residue List
 
 | Position | Residue | Type | CA Coordinates (Å) | Atoms | Notes |
