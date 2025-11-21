@@ -1,0 +1,32 @@
+# Active sites found in A0A5E7CC31_superimposed
+# Reference: AtUDH.pdb
+# Alignment RMSD: 6.10 Å
+# Distance cutoff: 4.0 Å
+# Chain: A
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+A0A5E7CC31_superimposed.pdb	A	10,12,33,35,57,80,102,103,106,135,137,139,161,163,165,191,193,215,237,240
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 10	GLY	0.66
+# 12	CYS	1.31
+# 33	ASP	0.71
+# 35	ILE	1.90
+# 57	LEU	1.84
+# 80	PHE	1.18
+# 102	GLY	0.67
+# 103	CYS	2.15
+# 106	LEU	1.15
+# 135	LEU	0.71
+# 137	GLY	0.37
+# 139	SER	0.28
+# 161	LEU	0.20
+# 163	ILE	0.21
+# 165	ALA	1.56
+# 191	GLN	2.14
+# 193	LEU	2.32
+# 215	PHE	0.75
+# 237	GLN	1.58
+# 240	ASP	2.97

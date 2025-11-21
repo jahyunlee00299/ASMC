@@ -1,0 +1,23 @@
+# Active sites found in A0A7V8FMY6_representative
+# Reference: AtUDH.pdb
+# Alignment RMSD: 4.93 Å
+# Distance cutoff: 4.0 Å
+# Chain: A
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+A0A7V8FMY6_representative.pdb	A	9,11,32,34,56,79,101,102,105,135,134
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 9	GLY	0.60
+# 11	ALA	1.34
+# 32	ASP	0.94
+# 34	HIS	1.83
+# 56	VAL	0.75
+# 79	TYR	1.70
+# 101	ALA	0.48
+# 102	VAL	2.49
+# 105	PHE	1.23
+# 135	TYR	1.39
+# 134	SER	3.88
