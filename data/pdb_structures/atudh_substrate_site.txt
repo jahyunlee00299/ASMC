@@ -1,0 +1,44 @@
+# AtUdh (PDB: 3RFV) Substrate Binding Site Definition
+# UDP-glucose dehydrogenase from Arabidopsis thaliana
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers(comma-separated)
+#
+# ⚠️ PDB 번호 Offset 주의:
+# PDB 3RFV는 residue 2번부터 시작합니다.
+# - PDB_num = alignment_pos + 2
+# - alignment_pos = PDB_num - 2
+# 예: Y136(PDB) = Y134(alignment) - 핵심 촉매 잔기
+#
+# 다른 구조에 적용 시 offset 조정이 필요할 수 있습니다.
+#
+# ============================================================
+# Substrate Binding Site (15L galacturonate analog 기준)
+# ============================================================
+# 리간드-잔기 거리 기반으로 선정 (2025-11-21)
+#
+# Direct (≤3.5Å): 8 residues - 기질과 직접 상호작용
+# PDB: 75,111,112,113,136,165,174,258
+# Aln: 73,109,110,111,134,163,172,256
+#   S75  (aln 73):  2.56Å
+#   S111 (aln 109): 2.71Å
+#   N112 (aln 110): 3.08Å
+#   H113 (aln 111): 2.99Å
+#   Y136 (aln 134): 2.53Å  *** 핵심 촉매 잔기 ***
+#   S165 (aln 163): 2.72Å
+#   R174 (aln 172): 2.64Å
+#   F258 (aln 256): 3.32Å
+#
+# Proximal (3.5-5.0Å): 4 residues
+# PDB: 76,163,164,175
+# Aln: 74,161,162,173
+#   V76  (aln 74):  4.16Å
+#   I163 (aln 161): 4.91Å
+#   G164 (aln 162): 3.59Å
+#   M175 (aln 173): 4.87Å
+
+AtUdh_3rfv.pdb	A	75,76,111,112,113,136,163,164,165,174,175,258
+
+# ============================================================
+# Direct only (더 엄격한 기준)
+# ============================================================
+# AtUdh_3rfv.pdb	A	75,111,112,113,136,165,174,258
