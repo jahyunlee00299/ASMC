@@ -3,7 +3,6 @@ import logging
 import re
 from itertools import groupby
 from pathlib import Path
-from typing import Dict, List, Tuple, Set, Any, Optional
 
 import numpy as np
 from sklearn import preprocessing
@@ -11,32 +10,23 @@ from sklearn.cluster import DBSCAN
 from PIL import Image, ImageDraw
 
 import warnings
-
-from plotnine import ggplot, labs
-from plotnineseqsuite.logo import geom_logo
-from plotnineseqsuite.theme import theme_seq, theme
-warnings.filterwarnings("ignore", module="plotnine")    
-
-from asmc.utils import read_multi_fasta
-
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    import weblogo
+    
 ###############
 ## Functions ##
 ###############
 
 ## -------------------------- Pocket detection ------------------------------ ##
 
-def build_ds(ref: Path, outdir: Path, chains: str) -> Tuple[Path, str]:
+def build_ds(ref, outdir, chains):
     """Build dataset file for p2rank
 
     Args:
-        ref (pathlib.Path): Path to reference file
+        ref (patlib.Path): Path to reference file
         outdir (pathlib.Path): Path to the output directory
         chains (str): String indicating which chain to search
-
-    Raises:
-        FileNotFoundError: Raised when a file indicating in ref isn't found
-        Exception: Others exception which could occured during the read of the
-        ref file
 
     Returns:
         ds (pathlib.Path): Path to the dataset file
@@ -44,25 +34,29 @@ def build_ds(ref: Path, outdir: Path, chains: str) -> Tuple[Path, str]:
     """
     
     # Use the 1st reference in the file
+    logging.info("Using the 1st reference structure to detect pocket")
     try:
         pdb = ref.read_text().split("\n")[0]
         if not Path(pdb).exists():
-            raise FileNotFoundError(f"{pdb} file not found")
-
+            logging.error("Path to the 1st reference structure in reference "
+                          f"file doesn't exist: {pdb}")
+            sys.exit(1)
     except Exception as error:
-        raise Exception(f"An error has occured while reading {ref}:\n{error}")
+        logging.error(f"An error has occured while reading {ref}:\n{error}")
+        sys.exit(1)
     
     # Detect which chain
     ds = Path.joinpath(outdir, "data.ds")
     if chains == "all":
         chains = "*"
     
+    
     # Writng the file
     text = f"HEADER: protein chains\n\n{pdb} {chains}"
             
     return ds, text
 
-def extract_pocket(outdir: Path) -> Dict[str, List[int]]:
+def extract_pocket(outdir):
     """Extract the pocket posistions
     
     Reads the p2rank outputs to extract the positions of the best pocket that
@@ -70,19 +64,16 @@ def extract_pocket(outdir: Path) -> Dict[str, List[int]]:
 
     Args:
         outdir (pathlib.Path): Path to the output directory
-    
-    Raises:
-        RuntimeError: Raised when there is no p2rank output
 
     Returns:
-        res_dict (dict): Dict containing as key the chain and as values the
-        positions
+        res_dict (dict): Dict containing as key the chain and as values the positions
     """
     
     try:
         prediction = [f for f in outdir.iterdir() if f.match("*predictions*")][0]
     except IndexError:
-        raise RuntimeError("No predictions file after running p2rank")
+        logging.error(f"No predictions file after running p2rank")
+        sys.exit(1)
     
     pred_arr = np.loadtxt(prediction, skiprows=1, delimiter=",",
                           converters={x:conv for x in range(11)},
@@ -110,28 +101,24 @@ def extract_pocket(outdir: Path) -> Dict[str, List[int]]:
             else:
                 break
     except Exception as error:
-        raise Exception("An error has occured while reading prediction file "
-                        f"from p2rank:\n{error}")
+        logging.error("An error has occured while reading prediction file "
+                      f"from p2rank:\n{error}")
+        sys.exit(1)
     
     return res_dict
 
-def conv(x: str) -> str:
+def conv(x):
     
     return x.strip()
 
-def build_pocket_text(ref: Path, res_dict: Dict[str, List[int]], outdir: Path,
-                      query_chain: str) -> Tuple[Path, str]:
+def build_pocket_text(ref, res_dict, outdir, query_chain):
     """Build the pocket file
 
     Args:
-        ref (pathlib.Path): Path to reference file
-        res_dict (dict): Dict containing as key the chain and as values the
-        positions
+        ref (patlib.Path): Path to reference file
+        res_dict (dict): Dict containing as key the chain and as values the positions
         outdir (pathlib.Path): Path to the output directory
         query_chain (str): 'all' or value from the command line option
-        
-    Raises:
-        Exception: Raised when the p2ranl output is empty
 
     Returns:
         output (pathlib.Path): Path of the pocket output file
@@ -146,9 +133,11 @@ def build_pocket_text(ref: Path, res_dict: Dict[str, List[int]], outdir: Path,
     
     try:
         chain = list(res_dict.keys())[0]
-    except Exception:
-        raise Exception("None results for p2rank, this may be due to an incorrect "
-                        f"query chain value : {query_chain}")
+    except:
+        logging.error(f"0 results for p2rank, this may be due to an incorrect "
+                      f"--chain value : {query_chain}")
+        sys.exit(1)
+    
     res_str = ''
     for elem in res_dict[chain]:
         res_str += f',{elem}'
@@ -159,35 +148,11 @@ def build_pocket_text(ref: Path, res_dict: Dict[str, List[int]], outdir: Path,
 
 ## ----------------------- Strcutural alignment ----------------------------- ##
 
-class RenumberResiduesError(Exception):
-    """Exception raised when an error occur during the renumber_residues function
-
-    Attribute:
-        pdb (Path): The Pdb file which caused the error
-        num (int): If != 0 it's indicate the line number which caused the error
-    """
-    
-    def __init__(self, pdb: Path, num: int = 0) -> None:
-        self.pdb = pdb
-        if num != 0:
-            self.message = f"An error has occured while reading {pdb}, line {num}"
-            self.message += " seems to be incorrectly formatted"
-        else:
-            self.message = "An error has occured when renumbering the residues "
-            self.message += "of reference. This may caused by a residue number "
-            self.message += "indicated in the pocket file not found in the "
-            self.message += f"'{pdb}' or a duplicated residue number"
-        super().__init__(self.message)
-
-def renumber_residues(ref_list: Tuple[Path, str, List[int]]) -> List[int]:
+def renumber_residues(ref_list):
     """Renumbering reference structure
 
     Args:
-        ref_list (tuple or list): [pathlib.Path, str(chain), list(positions)]
-
-    Raises:
-        RenumberResiduesError: Raised when error occur during the read of a line
-        or when renum don't have the right size
+        ref_list (list): [pathlib.Path, str(chain), list(positions)]
 
     Returns:
         renum (list): Renumbered positions
@@ -213,21 +178,27 @@ def renumber_residues(ref_list: Tuple[Path, str, List[int]]) -> List[int]:
                     if resn in true_pos and i not in renum:
                         renum.append(i)
         except IndexError:
-            raise RenumberResiduesError(pdb, num+1)
+            logging.error(f"An error has occured while reading {pdb}, line {num}"
+                          f" seems to be incorrectly formatted\n:{line.strip()}")
+            sys.exit(1)
+    
     
     if len(renum) != len(true_pos):
-        raise RenumberResiduesError(pdb)
+        logging.error("An error has occured when renumbering the residues of "
+                      "reference. This may be caused by a residue number indicated "
+                      f"in the pocket file not found in the {pdb} or a "
+                      "duplicated number")
+        sys.exit(1)
+    
     return renum
 
-def extract_aligned_pos(id_ref: str, id_model: str,
-                        ref_list: Tuple[Path, str, List[int]],
-                        alignment_file: Path, keep_ref: bool) -> str:
+def extract_aligned_pos(id_ref, id_model, ref_list, alignment_file, keep_ref):
     """Get positions aligned with the reference pocket
 
     Args:
         id_ref (str): Reference id
         id_model (str): Model id
-        ref_list (tuple or list): [pathlib.Path, str(chain), list(positions), list(renum)]
+        ref_list (list): [pathlib.Path, str(chain), list(positions), list(renum)]
         alignment_file (pathlib.Path): Path of the alignment file
         keep_ref (bool): Indicate whether we write the reference positions
 
@@ -252,13 +223,13 @@ def extract_aligned_pos(id_ref: str, id_model: str,
             else:
                 if line.startswith("#"):
                     break
-                if ref is True:
+                if ref == True:
                     aln[id_ref] = line.strip()
                 else:
                     aln[id_model] = line.strip()
     
     # If keep_ref is True, we write the active site of the ref
-    if keep_ref is True:
+    if keep_ref == True:
         text += f">{id_ref}\n"
         # j is a counter for amino acids, incremented only when
         # an amino acid is encoutered
@@ -286,14 +257,13 @@ def extract_aligned_pos(id_ref: str, id_model: str,
     text += f">{id_model}\n"
     try:
         pocket = "".join([aln[id_model][i] for i in pos_str])
-    except Exception:
+    except:
         pocket = ""
     text += pocket + "\n"
     
     return text
 
-def build_multiple_alignment(pairwise_dir: Path, ref_file: Path,
-                             pocket_file: Path) -> str:
+def build_multiple_alignment(pairwise_dir, ref_file, pocket_file):
     """Build multiple alignment
 
     Args:
@@ -331,7 +301,7 @@ def build_multiple_alignment(pairwise_dir: Path, ref_file: Path,
     count_ref = {ref:0 for ref in ref_pos}
     
     text = ""
-    logging.info("Build multiple alignment")
+    logging.info(f"Build multiple alignment")
     for i, alignment_file in enumerate(all_pairwise):
         id_model = alignment_file.stem.split("_-")[0]
         id_ref = alignment_file.stem.split("_-")[1]
@@ -349,16 +319,13 @@ def build_multiple_alignment(pairwise_dir: Path, ref_file: Path,
 
 ## ----------------------- Multiple Sequence Alignment ---------------------- ##
 
-def search_active_site_in_msa(msa: Path) -> str:
+def search_active_site_in_msa(msa):
     """Search and extract active site in  MSA
 
     Args:
         msa (pathlib.Path): file with references, active site positions for each
         references, path to tsv file indicating the reference of each sequence
         and the path of msa
-
-    Raises:
-        FileNotFoundError: Raised when a file isn't found
 
     Returns:
         str: multiple alignment of active sites to write in a file
@@ -377,22 +344,21 @@ def search_active_site_in_msa(msa: Path) -> str:
                 ref[split_line[0]]["pos"] = [int(x) -1 for x in split_line[1:]]
             else:
                 path = Path(line.strip())
-                if re.search("\\.(fasta|faa|fa).*", path.name):
+                if path.suffix in [".fasta", ".fa", ".faa"]:
                     aln = Path(line.strip())
                 else:
                     id_file = Path(line.strip())
-    if aln == "":
-        raise FileNotFoundError(f"An error has occured while reading '{msa}':\n"
-                                "no alignment in fasta format was found") 
-    elif not aln.exists():
-        raise FileNotFoundError("An error has occured while reading "
-                                f"'{msa}':\n'{aln}' file not found")
+            
+    if not aln.exists():
+        logging.error("An error has occured while reading "
+                      f"'{msa}':\n'{aln}' doesn't exists")
+        sys.exit(1)
     
     if id_file != "":
         if not id_file.exists():
-            raise FileNotFoundError("An error has occured while reading "
-                                    f"'{msa}':\n'{id_file}' file not found")
-            
+            logging.error("An erro has occured while reading "
+                        f"'{msa}':\n'{id_file}' doesn't exists")
+            sys.exit(1)
         elif id_file.exists:
             # Get the reference for each sequences
             map_target_ref = {}
@@ -408,7 +374,7 @@ def search_active_site_in_msa(msa: Path) -> str:
         for line in f:
             if line.startswith(">"):
                 if "tr|" in line or "sp|" in line:
-
+                    print(line)
                     seq_id = re.search("\\w+\\|(\\w+)\\|\\w+", line).group(1)
                 else:
                     seq_id = line[1:].split()[0]
@@ -456,7 +422,7 @@ def search_active_site_in_msa(msa: Path) -> str:
 
 ## ------------------------------- Clustering ------------------------------- ##
 
-def read_alignment(file: Path) -> Tuple[Dict[str, str], Dict[str, str]]:
+def read_alignment(file):
     """Read sequences alignment in fasta format
 
     Args:
@@ -490,25 +456,19 @@ def read_alignment(file: Path) -> Tuple[Dict[str, str], Dict[str, str]]:
                     else:
                         sequences[seq_id] += line.strip()
                 except ZeroDivisionError:
-                    del sequences[seq_id]
+                    del removed[seq_id]
                     removed[seq_id] = "empty line"
 
     return sequences, removed
 
-def read_matrix(matrix: Path) -> Dict[str, Dict[str, int]]:
+def read_matrix(matrix):
     """Read the distance matrix in tsv format
 
     Args:
         matrix (pathlib.Path): Path of the tsv file
-        
-    Raises:
-        ValueError: Raised when the file couldn't be splitted with tabluations
-        RuntimeError: Raised when we can't build the scoring_dict because the
-        matrix seems to not be symetrical
 
     Returns:
-        scoring_dict (dict): Dictionnary of dictionnary for access to each
-        distance between amino acid
+        scoring_dict (dict): Dictionnary of dictionnary for access to each distance between amino acid
     """
     
     if not matrix.exists():
@@ -522,37 +482,34 @@ def read_matrix(matrix: Path) -> Dict[str, Dict[str, int]]:
             if i == 0:
                 aa_order = line.strip().split("\t")
                 if len(aa_order) == 1:
-                    raise ValueError(f"'{matrix}' seems to not be a tsv file")
-
+                    logging.error(f"{matrix} seems to not be a tsv file")
+                    sys.exit(1)
             else:
                 sl = line.strip().split("\t")
                 try:
                     scoring_dict[sl[0]] = {aa_order[i]:int(sl[1:][i])
                                         for i in range(len(aa_order))}
-                except Exception:
-                    raise RuntimeError("An error has occured while reading the "
-                                       "distances matrix. The matrix may not "
-                                       "be symetrical")
+                except:
+                    logging.error("An error has occured while reading the "
+                                  "distances matrix. The matrix may not be "
+                                  "symetrical")
+                    sys.exit(1)
+                    
     return scoring_dict
 
-def pairwise_score(scoring_dict: Dict[str, Dict[str, int]], seqA: str, seqB: str,
-                   weighted_pos: List[int]) -> Tuple[int, Set[str]]:
+def pairwise_score(scoring_dict, seqA, seqB, weighted_pos):
     """Compute the score (distance) between two sequences
 
     Args:
-        scoring_dict (dict): Dictionnary of dictionnary for access to each
-        distance between amino acid
+        scoring_dict (dict): Dictionnary of dictionnary for access to each distance between amino acid
         seqA (str): A sequence
         seqB (str): A sequence
-        weigted_pos (list): List containing positions with more weight for score
-        calculation
+        weigted_pos (list): List containing positions with more weight for score calculation
 
     Returns:
         score (int): The score
-        warn (set): Set containing the characters not in the scoring_dict
     """
     
-    warn = ""
     score = 0
     for i, (posA, posB) in enumerate(zip(seqA, seqB)):
         if posA in ["-", "X"] or posB in ["-", "X"]:
@@ -567,35 +524,30 @@ def pairwise_score(scoring_dict: Dict[str, Dict[str, int]], seqA: str, seqB: str
                 else:
                     score += scoring_dict[posA][posB]
             except KeyError:
-                
-                warn = set(x for x in [posA, posB] if x not in scoring_dict)
+                logging.warning("At leats one of these two characters isn't "
+                                f"in the distances matrix: {posA} {posB}, they "
+                                "are given the same score as '-' and 'X'")
                 
                 if i+1 in weighted_pos:
                     score += 20 * 5
                 else:
                     score += 20
     
-    return score, warn
+    return score
 
-def dissimilarity(sequences: Dict[str, str], scoring_dict: Dict[str, Dict[str, int]],
-                  weighted_pos: List[int]) -> Tuple[List[str], np.ndarray, Set[str]]:
+def dissimilarity(sequences, scoring_dict, weighted_pos):
     """Build the dissimilarity/distance matrix
 
     Args:
-        sequences (dict): Dictionnary with the sequence id as key and the
-        corresponding sequence as value
-        scoring_dict (dict): Dictionnary of dictionnary for access to each
-        distance between amino acid
-        weigted_pos (list): List containing positions with more weight for score
-        calculation
+        sequences (dict): Dictionnary with the sequence id as key and the corresponding sequence as value
+        scoring_dict (dict): Dictionnary of dictionnary for access to each distance between amino acid
+        weigted_pos (list): List containing positions with more weight for score calculation
 
     Returns:
         data (np.ndarray): The distance matrix
-        key_list (list): The list of sequences id
-        warn_set (set): The set of warnning message
+        key_list (list):  The list of sequences id
     """
     
-    warn_set = set()
     data = []
     key_list = list(sequences.keys())
         
@@ -606,12 +558,10 @@ def dissimilarity(sequences: Dict[str, str], scoring_dict: Dict[str, Dict[str, i
             if key1 == key2:
                 score = 0.0
             else:
-                score, warn = pairwise_score(scoring_dict,
-                                             sequences[key1],
-                                             sequences[key2],
-                                             weighted_pos)
-                if len(warn) != 0:
-                    warn_set.update(warn)
+                score = pairwise_score(scoring_dict,
+                                       sequences[key1],
+                                       sequences[key2],
+                                       weighted_pos)
                 
             row.append(score)
         data.append(row)
@@ -621,22 +571,18 @@ def dissimilarity(sequences: Dict[str, str], scoring_dict: Dict[str, Dict[str, i
         X=data.reshape(-1,1)
     ).reshape(data.shape)
 
-    return key_list, data, warn_set
+    return key_list, data
 
-def dbscan_clustering(data: np.ndarray, threshold: float, min_samples: int,
-                      threads: int) -> np.ndarray:
+def dbscan_clustering(data, threshold, min_samples, threads):
     """Clustering with DBSCAN
 
     Args:
         data (np.ndarray): The distance matrix
         threshold (float): The maximum disatnce between two samples for one to
-        be considered as in the neighborhood of the other
+                           be considered as in the neighborhood of the other
         min_samples (int): The number of samples in an neighborhood for a point
-        to be considered as a core point
+                           to be considered as a core point
         threads (int): Number of CPU threads
-
-    Raises:
-        Exception: Raised when an error has occured dring the clustering
 
     Returns:
         labels (np.ndarray): Cluster id for each sequences
@@ -648,22 +594,18 @@ def dbscan_clustering(data: np.ndarray, threshold: float, min_samples: int,
         
         labels = dbscan.fit_predict(X=data)
     except Exception as error:
-        raise Exception(f"An error has occured during the clustering:\n{error}")
+        logging.error(f"An error has occured during the clustering:\n{error}")
+        sys.exit(1)
     
     return labels
 
-def formatting_output(sequences: Dict[str, str], key_list: List[str],
-                      labels: np.ndarray) -> List[Tuple[str, str, int]]:
+def formatting_output(sequences, key_list, labels):
     """Format data to write output
 
     Args:
-        sequences (dict): Dictionnary with the sequence id as key and the
-        corresponding sequence as value
+        sequences (dict): Dictionnary with the sequence id as key and the corresponding sequence as value
         key_list (list):  The list of sequences id present in the clustering
         labels (np.ndarray): Cluster id for each sequences
-        
-    Raises:
-        Exception: Raised when an error has occured
 
     Returns:
         G (list): Sorted data
@@ -673,17 +615,19 @@ def formatting_output(sequences: Dict[str, str], key_list: List[str],
         G = [(key_list[i], sequences[key_list[i]], n) for i, n in enumerate(labels)]
         G = sorted(G, key=lambda x: x[2])
     except Exception as error:
-        raise Exception(f"An error has occured during output formatting:\n{error}")
+        logging.error(f"An error has occured durint output formatting:\n{error}")
+        sys.exit(1)
     
     return G
 
 ## ------------------------------- Weblogo ---------------------------------- ##
 
-def build_fasta(group: List[Tuple[str, str, Optional[Any]]]) -> str:
+def build_fasta(group):
     """Build group fasta
 
     Args:
         group (list): List the sequences for each sequence id in the group
+        fasta (pathlib.Path): The path of the output file
 
     Returns:
         fasta (pathlib.Path): The path of the output file
@@ -695,53 +639,56 @@ def build_fasta(group: List[Tuple[str, str, Optional[Any]]]) -> str:
         text += f">{elem[0]}\n{elem[1]}\n"
     
     return text
-        
-def build_logo(lenght: int, fasta: Path, outdir: Path, n: int, prefix: str,
-                out_format: str, dpi: int, units: str):
-    """Build sequence logo for a Group
+
+def build_logo(lenght, fasta, outdir, n, prefix, out_format):
+    """Build weblogo for a Group
 
     Args:
         lenght (int): Number of sequences in the group
         fasta (pathlib.Path): The path of the fasta file
         outdir (pathib.Path): Output directory
         n (int): Cluster id
-        prefix (str): Prefix for the logo title
+        prefix (str): Prefix for the weblogo title
         out_format (str): eps or png
-        resolution (int): image resolution
-        units (str): bits or probabillity
-        
-    Raises:
-        Exception: Raised when an error has occured during the creation of the
-        logo.
+
     """
     
-    seqs = list(read_multi_fasta(fasta).values())
-        
-    try:
-        logo_title = f"{prefix}{n}"
-        logo_caption = str(lenght)
-        logo_output = Path.joinpath(outdir, f"{logo_title}.{out_format}")
-        logo = (
-            ggplot() + geom_logo(seqs, seq_type='AA', method=units)
-            + theme_seq() + theme(dpi=dpi, figure_size=(1920/dpi, 1080/dpi),
-                                  legend_position="none")
-            + labs(title=logo_title, caption=logo_caption)
-        )
-        logo.save(logo_output)
-
-    except Exception as error:
-        raise Exception("An error has occured when creating the logo of"
-                        f" {prefix}{n}:\n{error}")
+    with open(fasta, "r") as fin:
+        seqs = weblogo.read_seq_data(fin)
     
-def merge_logo(outdir: Path, prefix: str, out_format: str, dpi: int) -> None:
+    try:
+        data = weblogo.LogoData.from_seqs(seqs)
+        options = weblogo.LogoOptions()
+        options.logo_title = f"{prefix}{n}"
+        options.fineprint = str(lenght)
+        options.color_scheme = weblogo.chemistry
+        logo_format = weblogo.LogoFormat(data, options)
+        if out_format == "png":
+            logo_bytes = weblogo.png_print_formatter(data, logo_format)
+            output = Path.joinpath(outdir, f"{prefix}{n}.png")
+        elif out_format == "eps":
+            logo_bytes = weblogo.eps_formatter(data, logo_format)
+            output = Path.joinpath(outdir, f"{prefix}{n}.eps")
+        
+        output.write_bytes(logo_bytes)
+        
+    except Exception as error:
+        logging.error(f"An error has occured when creating the logo of" 
+                      f" {prefix}{n}:\n{error}")
+    
+def merge_logo(outdir, n, prefix, out_format):
     """Merge single logo files
 
     Args:
         outdir (pathib.Path): Output directory
+        n (int): The number of groups
         prefix (str): Prefix for the weblogo title 
-        out_format (str): png
-        dpi (int): image resolution
+        out_format (str): eps or png
     """
+
+    LOGO_PAD = 10
+
+    IM_WIDTH = 500
     
     all_file = [f for f in outdir.iterdir() if f.match(f"{prefix}*.{out_format}")]
     
@@ -750,34 +697,41 @@ def merge_logo(outdir: Path, prefix: str, out_format: str, dpi: int) -> None:
         i = all_file.index(name_to_find)
         del all_file[i]
         all_file.append(name_to_find)
-    except Exception:
+    except:
         pass
     
-    logo_list = []
     
-    for f in all_file:
-        logo = Image.open(f)
-        logo_list.append(logo)
-     
-    logo_size = logo_list[0].size
+    if out_format == "png":
+        LOGO_WIDTH = 450
+        LOGO_HEIGHT = 175
+        im_height = n * LOGO_HEIGHT + ((n-1) * LOGO_PAD) + LOGO_PAD * 2
+    else:
+        LOGO_HEIGHT = 92*2
+        im_height = n * LOGO_HEIGHT + ((n-1) * LOGO_PAD) + LOGO_PAD * 2
     
-    IM_WIDTH = logo_size[0]
-    IM_HEIGHT = logo_size[1] * len(logo_list)
-    
-    img = Image.new(mode="RGB", size=(IM_WIDTH, IM_HEIGHT), color=(255,255,255))
+    img = Image.new(mode='RGB', size=(IM_WIDTH, im_height), color=(255,255,255))
     draw = ImageDraw.Draw(img)
     
-    top_left_coord = (0,0)
+    top_left_coord = (LOGO_PAD, LOGO_PAD)
     
-    for i, logo in enumerate(logo_list):
-        if i != 0:
-            top_left_coord = (0, top_left_coord[1] + logo_size[1])
-
-        img.paste(logo, top_left_coord)
+    for i, f in enumerate(all_file):
         
-    output = outdir / "groups_logo.png"
+        logo = Image.open(f)
+        if out_format == "png":
+            logo = logo.resize(size=(LOGO_WIDTH, LOGO_HEIGHT))
+        else:
+            logo.load(scale=2)
+        
+        if i != 0:
+            top_left_coord = (top_left_coord[0],
+                              top_left_coord[1] + LOGO_PAD + LOGO_HEIGHT)
+            
+        img.paste(logo, top_left_coord)
     
-    img.save(output, dpi=(dpi,dpi))
+    output = Path.joinpath(outdir,
+                           f"Groups_logo.{out_format}")
+    
+    img.save(output)
     
     for f in all_file:
         f.unlink()

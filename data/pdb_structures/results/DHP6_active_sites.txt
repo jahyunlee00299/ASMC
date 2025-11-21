@@ -1,0 +1,32 @@
+# Active sites found in DHP6
+# Reference: pdb3rfv_chainA.pdb
+# Alignment RMSD: 18.26 Å
+# Distance cutoff: 4.0 Å
+# Chain: A
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+DHP6.pdb	A	10,34,33,60,71,311,310,306,113,116,104,104,177,298,302,249,226,243,194,194
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 10	GLY	2.14
+# 34	ALA	3.10
+# 33	ILE	1.83
+# 60	ASP	2.00
+# 71	PRO	3.28
+# 311	PRO	3.37
+# 310	ILE	2.56
+# 306	MET	2.31
+# 113	SER	3.57
+# 116	LEU	3.70
+# 104	GLU	3.76
+# 104	GLU	3.91
+# 177	GLN	3.44
+# 298	THR	2.04
+# 302	THR	1.56
+# 249	THR	3.97
+# 226	ILE	1.42
+# 243	GLY	2.75
+# 194	GLN	2.89
+# 194	GLN	2.69

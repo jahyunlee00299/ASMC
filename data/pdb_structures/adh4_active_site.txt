@@ -1,0 +1,9 @@
+# ADH4 (Alcohol Dehydrogenase 4) Active Site Definition
+# Reference structure for testing the UDH active site finder
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers(comma-separated)
+#
+# Active site residues from pocket.csv
+# Chain B, 22 residues
+#
+ADH4.pdb	B	78,101,102,133,134,135,138,139,161,163,164,168,172,176,197,198,199,264,266,299,303

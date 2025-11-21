@@ -1,0 +1,4 @@
+# 참조 구조 파일 경로를 한 줄에 하나씩 입력하세요
+# 예시:
+# /path/to/protein1.pdb
+# /path/to/protein2.pdb

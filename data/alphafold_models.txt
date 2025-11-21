@@ -1,0 +1,14 @@
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\AtUDH\AtUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\CsUDH\CsUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\FpUDH\FpUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\m1UDH\m1UDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\m2UDH\m2UDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\m3UDH\m3UDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\OgUDH\OgUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\PfUDH\PfUdh_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\PmUDH\PmUdh_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\PnUDH\PnUdh_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\PpUDH\PpUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\PsUDH\PsUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\SvUDH\SvUDH_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb
+C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\Alphafold_server\TbUDH\TbUdh_NAD.pdb C:\Users\Jahyun\PycharmProjects\ASMC\pdb_structures\pdb3rfv_chainA.pdb

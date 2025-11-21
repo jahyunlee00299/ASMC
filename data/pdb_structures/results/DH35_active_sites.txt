@@ -1,0 +1,30 @@
+# Active sites found in DH35
+# Reference: pdb3rfv_chainA.pdb
+# Alignment RMSD: 18.10 Å
+# Distance cutoff: 4.0 Å
+# Chain: B
+#
+# Format: PDB_file[TAB]Chain[TAB]Residue_numbers
+#
+DH35.pdb	B	12,13,35,62,75,314,313,309,86,120,108,108,180,301,305,252,229,246
+
+# Detailed residue information:
+# ResNum	ResName	Distance(Å)
+# 12	GLY	1.28
+# 13	CYS	3.42
+# 35	ILE	1.66
+# 62	PRO	2.45
+# 75	ALA	2.92
+# 314	PRO	3.49
+# 313	LEU	2.66
+# 309	VAL	2.14
+# 86	MET	3.31
+# 120	LEU	3.83
+# 108	GLU	3.83
+# 108	GLU	3.42
+# 180	LYS	3.16
+# 301	THR	1.36
+# 305	THR	1.75
+# 252	LYS	3.62
+# 229	THR	1.94
+# 246	GLY	1.83

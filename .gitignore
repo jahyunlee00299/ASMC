@@ -42,8 +42,3 @@ identity_results.txt
 # OS
 .DS_Store
 Thumbs.db
-
-# Project specific
-models.txt
-references.txt
-sequences.fasta

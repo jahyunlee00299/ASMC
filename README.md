@@ -94,8 +94,6 @@ asmc run --log run_asmc.log -t 6 -r reference_file -s sequences.fasta
 - **한국어 (Korean)**:
   - `Quick_Start.md` - Quick start guide in 5 minutes
   - `ASMC_사용법.md` - Comprehensive user manual
-  - `python 실행_예제.py` - Interactive execution script with menu
-  - `ASMC_실행.bat` - Windows batch script
 
 ## Testing
 
@@ -104,7 +102,5 @@ Run the test suite:
 python -m pytest tests/ -v
 ```
 
-Or use the interactive test script:
 ```
-python 실행_예제.py
 ```
